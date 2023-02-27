@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+  database:
+    image: postgres:latest
+    restart: always
+    container_name: postges_database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./data:/data
+      - ./data:/docker-entrypoint-initdb.d
+
+
+  backend:
+    image: adamgwozdz00/fleet-backend-mac
+    container_name: fleet-backend
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    depends_on:
+      - database
+
+
+  frontend:
+    image: adamgwozdz00/fleet-ui-mac
+    container_name: fleet-ui
+    restart: on-failure
+    ports:
+      - "4200:80"
+
